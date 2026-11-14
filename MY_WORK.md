@@ -152,29 +152,33 @@
 
 ---
 
-### Entry 2 - [Date and Time]
-**What I did**:
+### Entry 2 - November 14, 2026, 7:00 PM
+**What I did**: Implement Feature 1: (Protected the ready queue with a ReentrantLock)
 
 **Details**:
+- Implement Feature 1: (Protected the ready queue with a ReentrantLock)
+- Committed and pushed: `Feature 1: Protected the ready queue with a ReentrantLock`
 
-**Challenges**:
+**Challenges**: I have problem to identify critical sections
 
-**Solution**:
+**Solution**: Re-read README.md
 
-**Time spent**:
+**Time spent**: 1 hour
 
 ---
 
-### Entry 3 - [Date and Time]
-**What I did**:
+### Entry 3 - November 14, 2026, 8:00 PM
+**What I did**: Implement Feature 2: (Added locks to the shared statistics counters)
 
 **Details**:
+- Implement Feature 2: (Added locks to the shared statistics counters)
+- Committed and pushed: `Feature 2: Added locks to the shared statistics counters`
 
-**Challenges**:
+**Challenges**: I was unsured which of the two methods to choose
 
-**Solution**:
+**Solution**: one lock per variable was better to control and watch
 
-**Time spent**:
+**Time spent**: 30 minutes
 
 ---
 
