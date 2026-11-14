@@ -228,13 +228,13 @@
 
 > 💡 **TIP:** Fill this in **last**, after all entries are written.
 
-**Total time spent on assignment**: [X hours]
+**Total time spent on assignment**: 6 hours
 
-**Most challenging part**:
+**Most challenging part**: feature 3
 
-**Most interesting learning**:
+**Most interesting learning**: feature 2
 
-**What I would do differently next time**:
+**What I would do differently next time**: Re-read the code more times before start solving
 
 ---
 
@@ -395,13 +395,13 @@ Holding the mutex while waiting for space can cause deadlock. Wait for space fir
 ## Summary
 
 **Key concepts I understood through these questions:**
-1.
-2.
-3.
+1. Diffirence between one lock and 3 locks for variables
+2. Semaphore value meaning
+3. How producer and consumer problem work in real
 
 **Concepts I need to study more:**
-1.
-2.
+1. Busy waiting
+2. Critical sections
 
 ---
 
