@@ -197,16 +197,17 @@
 
 ---
 
-### Entry 5 - [Date and Time]
-**What I did**:
+### Entry 5 - November 14, 2026, 10:30 PM
+**What I did**: Completed reflection and technical answers
 
 **Details**:
+- Completed reflection and technical answers
 
-**Challenges**:
+**Challenges**: I had some problems forming concepts in english
 
-**Solution**:
+**Solution**: I tried to translate and understand each word
 
-**Time spent**:
+**Time spent**: 1 hour
 
 ---
 
