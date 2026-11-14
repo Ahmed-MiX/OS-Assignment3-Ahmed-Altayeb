@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Locale;
 // TODO (Feature 1 and Feature 2): import java.util.concurrent.locks.ReentrantLock;
 // TODO (Feature 3):               import java.util.concurrent.Semaphore;
 
@@ -410,10 +411,10 @@ public class SchedulerSimulationSync {
                 : Colors.BOLD + Colors.RED + "  ✘ At least one check failed (see the ✘ lines above): a race condition or busy waiting is still present." + Colors.RESET);
 
         System.out.println("\n" + Colors.BOLD + Colors.BRIGHT_CYAN + "═══ Process Summary Table (nominal ms) ═══" + Colors.RESET);
-        System.out.println(Colors.BOLD + String.format("%-9s %-9s %-11s %-13s %-13s", "Process", "Priority", "Burst", "Waiting", "Turnaround") + Colors.RESET);
+        System.out.println(Colors.BOLD + String.format(Locale.US,"%-9s %-9s %-11s %-13s %-13s", "Process", "Priority", "Burst", "Waiting", "Turnaround") + Colors.RESET);
         System.out.println("─".repeat(58));
         for (Process p : processes) {
-            System.out.println(String.format("%-9s %-9d %-11d %-13d %-13d",
+            System.out.println(String.format(Locale.US,"%-9s %-9d %-11d %-13d %-13d",
                     p.getName(), p.getPriority(), p.getBurstTime(), p.getWaitingTime(), p.getTurnaroundTime()));
         }
         System.out.println();
@@ -421,7 +422,7 @@ public class SchedulerSimulationSync {
 
     private static boolean verifyLine(String label, long expected, long observed) {
         boolean good = expected == observed;
-        System.out.println(String.format("  %-38s expected %-8d observed %-8d ", label, expected, observed) +
+        System.out.println(String.format(Locale.US,"  %-38s expected %-8d observed %-8d ", label, expected, observed) +
                 (good ? Colors.BRIGHT_GREEN + "✔" : Colors.RED + "✘ MISMATCH") + Colors.RESET);
         return good;
     }
