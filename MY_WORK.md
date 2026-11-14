@@ -182,16 +182,18 @@
 
 ---
 
-### Entry 4 - [Date and Time]
-**What I did**:
+### Entry 4 - November 14, 2026, 8:45 PM
+**What I did**: Implement Feature 3: (Replaced busy waiting with a counting semaphore)
 
 **Details**:
+- Implement Feature 3: (Replaced busy waiting with a counting semaphore)
+- Committed and pushed: `Feature 3: Replaced busy waiting with a counting semaphore`
 
-**Challenges**:
+**Challenges**: It was hard to identify the changes needed on the code to make sure the feature works correct
 
-**Solution**:
+**Solution**: I tried to understand and ask some mates and use tools to understand how its work
 
-**Time spent**:
+**Time spent**: 1.5 hour
 
 ---
 
