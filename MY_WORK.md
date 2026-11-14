@@ -32,11 +32,11 @@
 
 | Field | Your Answer |
 |-------|-------------|
-| **Full Name** | [Write your full name here] |
-| **Student ID** | [Write your student ID here] |
-| **University Email** | [yourid]@std.psau.edu.sa |
-| **GitHub Username** | [your-github-username] |
-| **Repository Link** | [Paste your repository link here] |
+| **Full Name** | Ahmed Jamal Aldeen Altayeb |
+| **Student ID** | 445052779 |
+| **University Email** | 445052779@std.psau.edu.sa |
+| **GitHub Username** | Ahmed-MiX |
+| **Repository Link** | https://github.com/Ahmed-MiX/OS-Assignment3-Ahmed-Altayeb |
  
 ---
 
