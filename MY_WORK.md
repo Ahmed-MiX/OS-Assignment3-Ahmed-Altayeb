@@ -138,15 +138,15 @@
 **Details**:
 - Forked the starter repository and renamed it
 - Changed student ID on line 304 to my actual ID (445052779)
-- Ran the original program: 2 CPUs started, three of them picked `P1`, then `IllegalThreadStateException`
+- Ran the original program: 2 CPUs started, two of them picked `P1`, then `IllegalThreadStateException`
 - Saved the output in a text file for Question 1
 - Added Student Information
-- Fixed output language problem using Local.US
-- Committed and pushed: `Set my student ID: 441234567`, `Docs: Added Student Information`, `Fix output language problem using Locale.US`
+- Fixed output language problem using Locale.US
+- Committed and pushed: `Set my student ID: 445052779`, `Docs: Added Student Information`, `Fix output language problem using Locale.US`
 
 **Challenges**: the function (String.format) was printing numbers in summary table in arabic format and in reversed order
 
-**Solution**: import (local) library (import java.util.Locale;) and use (Locale.US) as parameter for (String.format) function
+**Solution**: import (locale) library (import java.util.Locale;) and use (Locale.US) as parameter for (String.format) function
 
 **Time spent**: 1 hour
 

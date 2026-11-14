@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Locale;
+import java.util.Locale; // for String.format(Locale.US, ...) to get the same decimal separator on all platforms (dot, not comma)
 // TODO (Feature 1 and Feature 2): import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantLock; // TODO (Feature 1 and Feature 2): import java.util.concurrent.locks.ReentrantLock;
 // TODO (Feature 3):               import java.util.concurrent.Semaphore;
 
 // ANSI Color Codes for enhanced terminal output (same as Assignment 1)
@@ -110,15 +111,20 @@ class ReadyQueue {
     private final Map<Thread, Process> map = new HashMap<>();     // thread -> process (same idea as Assignment 1)
 
     // TODO Feature 1: declare the lock protecting `list` and `map` here
-
+    private final ReentrantLock ReentrantLock = new ReentrantLock(); // TODO Feature 1: declare the lock protecting `list` and `map` here
     // TODO Feature 3: declare the counting semaphore that counts the processes waiting in the ready queue here
 
     // Add a process to the ready queue (new process, or a process that did not finish its quantum)
     public void add(Process process) {
         // TODO Feature 1: protect this critical section
-        Thread thread = new Thread(process);
-        list.add(thread);
-        map.put(thread, process);
+        ReentrantLock.lock(); // TODO Feature 1: protect this critical section
+        try {
+            Thread thread = new Thread(process);
+            list.add(thread);
+            map.put(thread, process);
+        } finally {
+            ReentrantLock.unlock();
+        }
 
         // TODO Feature 3: signal that one more process is available in the queue
 
@@ -131,29 +137,44 @@ class ReadyQueue {
     // Remove and return the thread at the head of the queue (or null if the queue is empty)
     public Thread poll() {
         // TODO Feature 1: protect this critical section
-        if (list.isEmpty()) {
-            return null;
+        ReentrantLock.lock(); // TODO Feature 1: protect this critical section
+        try {
+            if (list.isEmpty()) {
+                return null;
+            }
+            Thread head = list.getFirst();      // 1) read the head of the queue
+            RaceWindow.pause();                 //    <- another CPU can read the SAME head here
+            list.removeFirst();                 // 2) remove the head (it may be a different thread by now!)
+            return head;
+        } finally {
+            ReentrantLock.unlock();
         }
-        Thread head = list.getFirst();      // 1) read the head of the queue
-        RaceWindow.pause();                 //    <- another CPU can read the SAME head here
-        list.removeFirst();                 // 2) remove the head (it may be a different thread by now!)
-        return head;
     }
 
     public Process processOf(Thread thread) {
         // TODO Feature 1: protect this access
-        return map.get(thread);
+        ReentrantLock.lock(); // TODO Feature 1: protect this access
+        try {
+            return map.get(thread);
+        } finally {
+            ReentrantLock.unlock();
+        }     
     }
 
     // Names of the processes currently waiting in the queue (used to display the ready queue)
     public String snapshot() {
         // TODO Feature 1: protect this critical section
-        StringBuilder sb = new StringBuilder();
-        for (Thread t : list) {
-            if (sb.length() > 0) sb.append(" → ");
+        ReentrantLock.lock(); // TODO Feature 1: protect this critical section
+        try {      
+            StringBuilder sb = new StringBuilder();
+            for (Thread t : list) {
+                if (sb.length() > 0) sb.append(" → ");
             sb.append(map.get(t).getName());
+            }
+            return sb.length() == 0 ? "empty" : sb.toString();
+        } finally {
+            ReentrantLock.unlock();
         }
-        return sb.length() == 0 ? "empty" : sb.toString();
     }
 }
 
@@ -411,10 +432,10 @@ public class SchedulerSimulationSync {
                 : Colors.BOLD + Colors.RED + "  ✘ At least one check failed (see the ✘ lines above): a race condition or busy waiting is still present." + Colors.RESET);
 
         System.out.println("\n" + Colors.BOLD + Colors.BRIGHT_CYAN + "═══ Process Summary Table (nominal ms) ═══" + Colors.RESET);
-        System.out.println(Colors.BOLD + String.format(Locale.US,"%-9s %-9s %-11s %-13s %-13s", "Process", "Priority", "Burst", "Waiting", "Turnaround") + Colors.RESET);
+        System.out.println(Colors.BOLD + String.format(Locale.US,"%-9s %-9s %-11s %-13s %-13s", "Process", "Priority", "Burst", "Waiting", "Turnaround") + Colors.RESET); // same decimal separator on all platforms (dot, not comma)
         System.out.println("─".repeat(58));
         for (Process p : processes) {
-            System.out.println(String.format(Locale.US,"%-9s %-9d %-11d %-13d %-13d",
+            System.out.println(String.format(Locale.US,"%-9s %-9d %-11d %-13d %-13d", // same decimal separator on all platforms (dot, not comma)
                     p.getName(), p.getPriority(), p.getBurstTime(), p.getWaitingTime(), p.getTurnaroundTime()));
         }
         System.out.println();
@@ -422,7 +443,7 @@ public class SchedulerSimulationSync {
 
     private static boolean verifyLine(String label, long expected, long observed) {
         boolean good = expected == observed;
-        System.out.println(String.format(Locale.US,"  %-38s expected %-8d observed %-8d ", label, expected, observed) +
+        System.out.println(String.format(Locale.US,"  %-38s expected %-8d observed %-8d ", label, expected, observed) + // same decimal separator on all platforms (dot, not comma)
                 (good ? Colors.BRIGHT_GREEN + "✔" : Colors.RED + "✘ MISMATCH") + Colors.RESET);
         return good;
     }
