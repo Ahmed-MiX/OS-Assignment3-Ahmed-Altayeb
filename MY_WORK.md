@@ -176,7 +176,7 @@
 
 **Challenges**: I was unsured which of the two methods to choose
 
-**Solution**: one lock per variable was better to control and watch
+**Solution**: one lock for all variables was better to control and watch
 
 **Time spent**: 30 minutes
 
