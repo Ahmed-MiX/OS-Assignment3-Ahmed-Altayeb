@@ -253,7 +253,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+I learned that concurrent CPUs can share ready queue. In first output, CPU1 and CPU2 selected P1 which leed to an IllegalThreadStateException. This showed me that reading and removing a queue head must form one protected critical section. I used queueLock with try and finally in four methods to provide mutual exclusion. I also protected the three shared variables and getters with one statsLock.
 
 ## Question 2: What was the most challenging part of this assignment?
 
@@ -261,7 +261,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+The most challenging part for me was designing the semaphore and determine critical sections. I tried hard to understand and figure the boundaries of critical section. I tried to find out what is the parts that should be modified to have feature 3 implemented. Also I tried to find out what is the best way to protects variables with 1 key for all or 1 key for each.
 
 ## Question 3: How did you overcome the challenges you faced?
 
@@ -269,7 +269,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+I first examined the output of the broken starter. Then I Re-read the whole code to determine what cause failier. Then I Re-read the whole README.md to find out what exactly should be modified. Then I tried different solutions to decsied what is better. Last I tried to search and ask how to implement the best solutions.
 
 ## Question 4: Where can synchronization concepts be applied in real-world applications?
 
@@ -277,7 +277,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+Synchronization is important in banking applications when multiple transactions modify the same account balance at the same time. A mutex can protect the balance update so that one transaction does not overwrite another transaction change. Ticket booking systems face same problem when two users try to reserve the last available seat. inventory systems face a similar problem when two users try to have the last available item.
 
 ### Optional: What would you like to learn more about?
 
@@ -311,20 +311,37 @@
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+In my original run the verification showed 28 observed context switches instead of 29. And 13 completed processes instead of 14. And 84488 ms of service time instead of 88434 ms. And 776 busy waiting polls instead of 0. CPU1 and CPU2 both selected P1 followed by a IllegalThreadStateException while P2 was never executed. The same interleaving is possible without RaceWindow.pause() because real thread scheduling can interrupt a read modify write sequence making the bug difficult to reproduce.
 
 Verification block of the **original starter**:
 ```
-[Paste the verification block (or the exception/watchdog message) of the starter here]
+⛔ WATCHDOG: the simulation did not finish (41 s). A process was lost, or a CPU is blocked forever, or the 'completed' counter lost an update.
+
+═══ VERIFICATION (expected values are computed from YOUR seed) ═══
+  Context switches (quanta executed)     expected 29       observed 28       ✘ MISMATCH
+  Completed processes                    expected 14       observed 13       ✘ MISMATCH
+  Total service time (ms)                expected 88434    observed 84488    ✘ MISMATCH
+  Busy-waiting polls (must be 0)         expected 0        observed 776      ✘ MISMATCH
+  ✘ At least one check failed (see the ✘ lines above): a race condition or busy waiting is still present.
 ```
 
 Verification block of **my final version**:
 ```
-[Paste the verification block of your final version here (all lines ✔)]
+═══ VERIFICATION (expected values are computed from YOUR seed) ═══
+  Context switches (quanta executed)     expected 29       observed 29       ✔
+  Completed processes                    expected 14       observed 14       ✔
+  Total service time (ms)                expected 88434    observed 88434    ✔
+  Busy-waiting polls (must be 0)         expected 0        observed 0        ✔
+  ✔ All shared values are consistent.
 ```
 
 **Explanation of the timeline:**
-[Explain the lost update step by step.]
+1. A process thread executing on CPU1 reads contextSwitchCount = 12.
+2. RaceWindow.pause() creates an opportunity for another thread to run.
+3. Another process thread executing on CPU2 also reads 12.
+4. Both calculate 13.
+5. The two threads write 13 and one increment is lost.
+6. The expected result after two increments is 14 but the value is 13.
 
 ## Question 2: Critical Sections and Lock Granularity
 
@@ -334,12 +351,14 @@ Verification block of **my final version**:
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+Question 2: Critical Sections and Lock Granularity
+
+I protected ReadyQueue.add() and poll() and processOf() and snapshot() with queueLock because they access the shared list and map. I protected incrementContextSwitch() and incrementCompletedProcess() and addServiceTime() and three getters with one statsLock to prevent lost updates and organize shared reads. I chose one lock because it is simpler to watch also separate locks cost additional complexity. The queue uses a different lock so queue operations are not unnecessarily serial with statistics updates and lock with try and finally ensures mutual exclusion and support progress.
 
 | Critical section (variable / method) | Lock used | Why it needs protection |
 |---|---|---|
-| [e.g., `ReadyQueue.poll()`] | [lock name] | [reason] |
-| [...] | [...] | [...] |
+| ReadyQueue.add() (list, map) | queueLock | Inserts a new thread and its process mapping consistently |
+| incrementContextSwitch() | statsLock | Prevents lost context-switch increments |
 
 ## Question 3: Busy Waiting vs Semaphore
 
@@ -349,7 +368,9 @@ Verification block of **my final version**:
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+In my first run CPUs always check the empty queue then sleep for 20 ms and retry. so there is 776 busy waiting polls. My final ReadyQueue initializes Semaphore(0) meaning no ready work is available when the queue is created and each add() add one permit. Because the main method adds 14 processes before starting the CPUs and the semaphore has 14 permits after run. Each CPU calls waitForProcess() (acquire()) before poll() and it blocks without repeated polling and When all 14 processes have completed signalShutdownIfComplete() sends release(SharedStats.totalCPUs) once allowing blocked CPUs to detect completion and exit and without this signal CPU may wait indefinitely and start the watchdog.
+
+
 
 ## Question 4: Classical Problems and Deadlock
 
@@ -359,14 +380,16 @@ Verification block of **my final version**:
 
 **Your Answer:** *(3-5 sentences)*
 
+My program is similar to the Producer–Consumer problem. The main thread adds processes and CPUs take them and return unfinished ones. For bounded queue we need three semaphores: empty = K and full = 0 and mutex = 1. Deadlock can happen if a producer holds the mutex while waiting for an empty space because the consumer can't use the mutex. To prevent this the producer must wait for an empty space before locking the mutex breaking the hold-and-wait condition.
+
 **Classical problem and roles**:
-[Name the problem; who is the producer, who is the consumer?]
+Producer–Consumer. Main adds processes. CPUs take and return unfinished processes.
 
 **Semaphores for a bounded queue (name and initial value)**:
-[Name the three semaphores and their initial values.]
+empty = K, full = 0, mutex = 1.
 
 **Deadlock scenario and prevention**:
-[Describe the scenario and the necessary condition you would break.]
+Holding the mutex while waiting for space can cause deadlock. Wait for space first then lock the mutex to prevent hold and wait.
 
 ## Summary
 
